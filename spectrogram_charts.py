@@ -24,7 +24,7 @@ samplingFreq, mySound = wavfile.read(original)
 print 'Sampling frequency = ', samplingFreq
 
 startSample = 1000000
-endSample   = 1040000
+endSample   = 1048001
 mySound = mySound[startSample:endSample:1]
 
 #resamp = scipy.signal.resample(mySound, 1000)
