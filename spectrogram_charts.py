@@ -24,7 +24,7 @@ samplingFreq, mySound = wavfile.read(original)
 print 'Sampling frequency = ', samplingFreq
 
 startSample = 1000000
-endSample   = 1000100
+endSample   = 1064000
 mySound = mySound[startSample:endSample:1]
 
 #resamp = scipy.signal.resample(mySound, 1000)
@@ -82,6 +82,11 @@ print 'Sound length =', mySoundLength
 #Take the Fourier transformation on given sample point 
 #fftArray = fft(mySound)
 fftArray = fft(mySoundOneChannel)
+
+plt.plot(fftArray, color='R')
+plt.xlabel('??')
+plt.ylabel('FFT')
+plt.show()
 
 numUniquePoints = numpy.ceil((mySoundLength + 1) / 2.0)
 fftArray = fftArray[0:numUniquePoints]
