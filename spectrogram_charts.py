@@ -65,10 +65,14 @@ samplingFreq, mySound = wavfile.read(original)
 
 print 'Sampling frequency = ', samplingFreq
 
+mySound = mySound[1000:10000:1]
+
 #resamp = scipy.signal.resample(mySound, 1000)
 
-print 'resampled size = ', resamp.shape
+# print 'resampled size = ', resamp.shape
+
 #Check if wave file is 16bit or 32 bit. 24bit is not supported
+
 mySoundDataType = mySound.dtype
 
 #We can convert our sound array to floating point values ranging from -1 to 1 as follows
@@ -100,65 +104,65 @@ timeArray = timeArray / samplingFreq
 #Scale to milliSeconds
 timeArray = timeArray * 1000
 
-#Plot the tone
-# plt.plot(timeArray, mySoundOneChannel, color='G')
-# plt.xlabel('Time (ms)')
-# plt.ylabel('Amplitude')
-# plt.show()
+# Plot the tone
+plt.plot(timeArray, mySoundOneChannel, color='G')
+plt.xlabel('Time (ms)')
+plt.ylabel('Amplitude')
+plt.show()
 
 
-#Plot frequency content
-#We can get frquency from amplitude and time using FFT , Fast Fourier Transform algorithm
+# Plot frequency content
+# We can get frquency from amplitude and time using FFT , Fast Fourier Transform algorithm
 
-#Get length of mySound object array
+# Get length of mySound object array
 mySoundLength = len(mySound)
 
 print 'Sound length =', mySoundLength
 
-# #Take the Fourier transformation on given sample point 
-# #fftArray = fft(mySound)
-# fftArray = fft(mySoundOneChannel)
+#Take the Fourier transformation on given sample point 
+#fftArray = fft(mySound)
+fftArray = fft(mySoundOneChannel)
 
-# numUniquePoints = numpy.ceil((mySoundLength + 1) / 2.0)
-# fftArray = fftArray[0:numUniquePoints]
+numUniquePoints = numpy.ceil((mySoundLength + 1) / 2.0)
+fftArray = fftArray[0:numUniquePoints]
 
-# #FFT contains both magnitude and phase and given in complex numbers in real + imaginary parts (a + ib) format.
-# #By taking absolute value , we get only real part
+#FFT contains both magnitude and phase and given in complex numbers in real + imaginary parts (a + ib) format.
+#By taking absolute value , we get only real part
 
-# fftArray = abs(fftArray)
+fftArray = abs(fftArray)
 
-# #Scale the fft array by length of sample points so that magnitude does not depend on
-# #the length of the signal or on its sampling frequency
+#Scale the fft array by length of sample points so that magnitude does not depend on
+#the length of the signal or on its sampling frequency
 
-# fftArray = fftArray / float(mySoundLength)
+fftArray = fftArray / float(mySoundLength)
 
-# #FFT has both positive and negative information. Square to get positive only
-# fftArray = fftArray **2
+#FFT has both positive and negative information. Square to get positive only
+fftArray = fftArray **2
 
-# #Multiply by two (research why?)
-# #Odd NFFT excludes Nyquist point
-# if mySoundLength % 2 > 0: #we've got odd number of points in fft
-#     fftArray[1:len(fftArray)] = fftArray[1:len(fftArray)] * 2
+#Multiply by two (research why?)
+#Odd NFFT excludes Nyquist point
+if mySoundLength % 2 > 0: #we've got odd number of points in fft
+    fftArray[1:len(fftArray)] = fftArray[1:len(fftArray)] * 2
 
-# else: #We've got even number of points in fft
-#     fftArray[1:len(fftArray) -1] = fftArray[1:len(fftArray) -1] * 2  
+else: #We've got even number of points in fft
+    fftArray[1:len(fftArray) -1] = fftArray[1:len(fftArray) -1] * 2  
 
-# print 'About to compute freqArray'
+print 'About to compute freqArray'
 
-# freqArray = numpy.arange(0, numUniquePoints, 1.0) * (samplingFreq / mySoundLength);
+freqArray = numpy.arange(0, numUniquePoints, 1.0) * (samplingFreq / mySoundLength);
 
-# #Plot the frequency
-# plt.plot(freqArray/1000, 10 * numpy.log10 (fftArray), color='B')
-# plt.xlabel('Frequency (Khz)')
-# plt.ylabel('Power (dB)')
-# plt.show()
+#Plot the frequency
+plt.plot(freqArray/1000, 10 * numpy.log10 (fftArray), color='B')
+plt.xlabel('Frequency (Khz)')
+plt.ylabel('Power (dB)')
+plt.show()
 
-# #Get List of element in frequency array
-# #print freqArray.dtype.type
-# freqArrayLength = len(freqArray)
-# print "freqArrayLength =", freqArrayLength
-# numpy.savetxt("freqData.txt", freqArray, fmt='%6.2f')
+#Get List of element in frequency array
+#print freqArray.dtype.type
+freqArrayLength = len(freqArray)
+print "freqArrayLength =", freqArrayLength
+numpy.savetxt("freqData.txt", freqArray, fmt='%6.2f')
 
-# #Print FFtarray information
-# print "fftArray length =", len(fftArray)
-# numpy.savetxt("fftData.txt", fftArray)
+#Print FFtarray information
+print "fftArray length =", len(fftArray)
+numpy.savetxt("fftData.txt", fftArray)
