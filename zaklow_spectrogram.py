@@ -86,12 +86,12 @@ def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
     plt.xticks(xlocs, ["%.02f" % l for l in ((xlocs*len(samples)/timebins)+(0.5*binsize))/samplerate])
     ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
     plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
-    
+
     if plotpath:
         plt.savefig(plotpath, bbox_inches="tight")
     else:
         plt.show()
-        
+
     plt.clf()
     
 def trim_first_seconds(secondsToTrim, sampleRate, samples):
