@@ -187,7 +187,7 @@ assert(len(moves) == 360)
 for i in range(0, len(moves)):
     testMove = moves[i]
     # Pick a representative of the given move angle
-    angleSpec = testMove[0]
+    angleSpec = testMove[testMove.shape[0] / 2]
 
     corVec = signal.correlate(angleSpec, singleSample)
     cor = np.linalg.norm(corVec)
