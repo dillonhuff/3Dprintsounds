@@ -52,12 +52,7 @@ def logscale_spec(spec, sr=44100, factor=20.):
     
     return newspec, freqs
 
-""" plot spectrogram"""
-def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
-    samplerate, samples = wav.read(audiopath)
-    startS = 4991000
-    endS   = 5009000
-    samples = samples #samples[startS:endS:1]
+def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
     s = stft(samples, binsize)
     
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
@@ -85,6 +80,20 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
         plt.show()
         
     plt.clf()
+    
+def trim_first_seconds(secondsToTrime, sampleRate, samples):
+    startSample = sampleRate*secondsToTrime
+    return samples[startSample:samples.shape[0]:1]
+
+""" plot spectrogram"""
+def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
+    samplerate, samples = wav.read(audiopath)
+    startS = 4991000
+    endS   = 5009000
+
+    samples = trim_first_seconds(30, samplerate, samples)
+    #samples = samples #samples[startS:endS:1]
+    plotstft_samples(samplerate, samples, binsize, plotpath, colormap)
 
 #plotstft("my_audio_file.wav")
 #plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**13)
