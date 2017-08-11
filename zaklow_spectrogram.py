@@ -52,13 +52,26 @@ def logscale_spec(spec, sr=44100, factor=20.):
     
     return newspec, freqs
 
-def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
+def build_spectrogram(samplerate, samples, binsize, plotpath, colormap):
     s = stft(samples, binsize)
     
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
     ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
+
+    return ims, freq
+
+def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
+    # s = stft(samples, binsize)
+    
+    # sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
+    # ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
+    ims, freq = build_spectrogram(samplerate, samples, binsize, plotpath, colormap)
     
     timebins, freqbins = np.shape(ims)
+
+    print ims.shape
+    print '# of time bins = ', timebins
+    print '# of frequency bins = ', freqbins
     
     plt.figure(figsize=(15, 7.5))
     plt.imshow(np.transpose(ims), origin="lower", aspect="auto", cmap=colormap, interpolation="none")
@@ -100,11 +113,11 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 
     # over at 80
 
-    samples = take_first_seconds(80, samplerate, samples)
-    samples = trim_first_seconds(65, samplerate, samples)
+    #samples = take_first_seconds(80, samplerate, samples)
+    #samples = trim_first_seconds(65, samplerate, samples)
     #samples = samples #samples[startS:endS:1]
     plotstft_samples(samplerate, samples, binsize, plotpath, colormap)
 
 #plotstft("my_audio_file.wav")
 #plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**10)
-plotstft("./Manual_square/iPhone6sAudio.wav", 2**10)
+plotstft("./angles/iPhone6sAudio.wav", 2**10)
