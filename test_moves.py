@@ -23,6 +23,7 @@ pairs = rtpairs(R, T)
 rad = 1.0
 ts = [0, 0.1, 0.2, 0.3, 0.4]
 
+print 'G0 F1800 X0.0 Y0.0'
 i = 1
 for t in np.arange(0.0, 2*np.pi, (2*np.pi) / 360):
     xpt = rad*np.cos(t)
