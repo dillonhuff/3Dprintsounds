@@ -163,12 +163,21 @@ for i in range(0, len(angleFreqs)):
 singleSample = squareSpectrogram[0]
 print 'singleSample shape =', singleSample.shape
 
-for i in range(0, angleSpectrogram.shape[0]):
+correlations = []
+#for i in range(0, angleSpectrogram.shape[0]):
+for i in range(0, 1000):
     angleSpec = angleSpectrogram[i]
     #print 'angleSpec shape =', angleSpec.shape
     cor = signal.correlate(angleSpec, singleSample)
+    correlations.append(np.linalg.norm(cor))
 
-    print 'Correlation norm = ', np.linalg.norm(cor)
+correlations.sort()
+correlations = reversed(correlations)
+
+for c in correlations:
+    print c
+
+    #print 'Correlation norm = ', np.linalg.norm(cor)
 
 def spec_cmp():
     for i in range(0, angleSpectrogram.shape[0]):
