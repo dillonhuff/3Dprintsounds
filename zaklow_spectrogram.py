@@ -61,7 +61,7 @@ def build_spectrogram(samplerate, samples, binsize):
 
     return ims, freq
 
-def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
+def plotstft_samples(samplerate, samples, binsize, plotpath=None, colormap="jet"):
     ims, freq = build_spectrogram(samplerate, samples, binsize)
     
     timebins, freqbins = np.shape(ims)
@@ -84,7 +84,7 @@ def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
     ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
     plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
 
-    plt.axvline(x=3000)
+    #plt.axvline(x=3000)
 
     if plotpath:
         plt.savefig(plotpath, bbox_inches="tight")
@@ -119,13 +119,15 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 
 #plotstft("my_audio_file.wav")
 #plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**10)
-plotstft("./angles/iPhone6sAudio.wav", 2**10)
+#plotstft("./angles/iPhone6sAudio.wav", 2**10)
 
 binSize = 2**10
 
 anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
 
 anglesSamples = anglesSamples[0:100000:1]
+
+plotstft_samples(anglesSampleRate, anglesSamples, binSize)
 
 angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
 
@@ -134,7 +136,9 @@ print 'Angles spectrogram shape = ', angleSpectrogram.shape
 
 squareSampleRate, squareSamples = wav.read("./CFP_KEY_2/iPhone6sAudio.wav")
 
-squareSamples = anglesSamples[0:100000:1]
+squareSamples = squareSamples[0:100000:1]
+
+plotstft_samples(squareSampleRate, squareSamples, binSize)
 
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
