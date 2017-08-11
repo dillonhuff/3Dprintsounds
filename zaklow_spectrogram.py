@@ -125,11 +125,12 @@ binSize = 2**10
 anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
 
 # Trims to about the actual program
-# anglesSamples = take_first_seconds(1200, anglesSampleRate, anglesSamples)
+anglesSamples = take_first_seconds(1200, anglesSampleRate, anglesSamples)
+anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
+
+# anglesSamples = take_first_seconds(400, anglesSampleRate, anglesSamples)
 # anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
 
-anglesSamples = take_first_seconds(400, anglesSampleRate, anglesSamples)
-anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
 
 #plotstft_samples(anglesSampleRate, anglesSamples, binSize)
 
@@ -149,7 +150,7 @@ squareSamples = take_first_seconds(74, squareSampleRate, squareSamples)
 squareSamples = trim_first_seconds(69, squareSampleRate, squareSamples)
 
 
-#plotstft_samples(squareSampleRate, squareSamples, binSize)
+plotstft_samples(squareSampleRate, squareSamples, binSize)
 
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
@@ -163,16 +164,49 @@ for i in range(0, len(angleFreqs)):
 singleSample = squareSpectrogram[0]
 print 'singleSample shape =', singleSample.shape
 
+singleSample90 = squareSpectrogram[150] # + (squareSpectrogram.shape[0] / 4)]
+print 'singleSample90 shape =', singleSample90.shape
+
 correlations = []
 #for i in range(0, angleSpectrogram.shape[0]):
-for i in range(0, 1000):
-    angleSpec = angleSpectrogram[i]
-    #print 'angleSpec shape =', angleSpec.shape
-    cor = signal.correlate(angleSpec, singleSample)
-    correlations.append(np.linalg.norm(cor))
 
-correlations.sort()
-correlations = reversed(correlations)
+def break_spectrogram_into_segments(numSegments, angleSpectrogram):
+    segmentSize = angleSpectrogram.shape[0] / numSegments
+    print 'Segment size = ', segmentSize
+    segmentStart = 0
+    segments = []
+    for i in range(0, numSegments):
+        segments.append(angleSpectrogram[segmentStart:(segmentStart + segmentSize):1])
+        segmentStart += segmentSize
+    return segments
+    
+moves = break_spectrogram_into_segments(360, angleSpectrogram)
+
+assert(len(moves) == 360)
+
+for i in range(0, len(moves)):
+    testMove = moves[i]
+    # Pick a representative of the given move angle
+    angleSpec = testMove[0]
+
+    corVec = signal.correlate(angleSpec, singleSample)
+    cor = np.linalg.norm(corVec)
+    print 'Correlation with move angle', i, ' = ', cor
+
+    corVec = signal.correlate(angleSpec, singleSample90)
+    cor = np.linalg.norm(corVec)
+    print 'Correlation of 90 degree move with angle', i, ' = ', cor
+    
+    #correlations.append(np.linalg.norm(cor))
+    
+# for i in range(0, 1000):
+#     angleSpec = angleSpectrogram[i]
+#     #print 'angleSpec shape =', angleSpec.shape
+#     cor = signal.correlate(angleSpec, singleSample)
+#     correlations.append(np.linalg.norm(cor))
+
+# correlations.sort()
+# correlations = reversed(correlations)
 
 for c in correlations:
     print c
