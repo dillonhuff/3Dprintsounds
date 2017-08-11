@@ -81,9 +81,13 @@ def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
         
     plt.clf()
     
-def trim_first_seconds(secondsToTrime, sampleRate, samples):
-    startSample = sampleRate*secondsToTrime
+def trim_first_seconds(secondsToTrim, sampleRate, samples):
+    startSample = sampleRate*secondsToTrim
     return samples[startSample:samples.shape[0]:1]
+
+def take_first_seconds(secondsToTake, sampleRate, samples):
+    endSample = sampleRate*secondsToTake
+    return samples[0:endSample]
 
 """ plot spectrogram"""
 def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
@@ -91,10 +95,16 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     startS = 4991000
     endS   = 5009000
 
-    samples = trim_first_seconds(30, samplerate, samples)
+    # some cutoff at 30
+    # cutoff init at 50
+
+    # over at 80
+
+    samples = take_first_seconds(80, samplerate, samples)
+    samples = trim_first_seconds(65, samplerate, samples)
     #samples = samples #samples[startS:endS:1]
     plotstft_samples(samplerate, samples, binsize, plotpath, colormap)
 
 #plotstft("my_audio_file.wav")
-#plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**13)
+#plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**10)
 plotstft("./Manual_square/iPhone6sAudio.wav", 2**10)
