@@ -52,7 +52,7 @@ def logscale_spec(spec, sr=44100, factor=20.):
     
     return newspec, freqs
 
-def build_spectrogram(samplerate, samples, binsize, plotpath, colormap):
+def build_spectrogram(samplerate, samples, binsize):
     s = stft(samples, binsize)
     
     sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
@@ -61,11 +61,7 @@ def build_spectrogram(samplerate, samples, binsize, plotpath, colormap):
     return ims, freq
 
 def plotstft_samples(samplerate, samples, binsize, plotpath, colormap):
-    # s = stft(samples, binsize)
-    
-    # sshow, freq = logscale_spec(s, factor=1.0, sr=samplerate)
-    # ims = 20.*np.log10(np.abs(sshow)/10e-6) # amplitude to decibel
-    ims, freq = build_spectrogram(samplerate, samples, binsize, plotpath, colormap)
+    ims, freq = build_spectrogram(samplerate, samples, binsize)
     
     timebins, freqbins = np.shape(ims)
 
@@ -120,4 +116,22 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 
 #plotstft("my_audio_file.wav")
 #plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**10)
-plotstft("./angles/iPhone6sAudio.wav", 2**10)
+#plotstft("./angles/iPhone6sAudio.wav", 2**10)
+
+binSize = 2**10
+
+anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
+angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
+
+print 'Angles spectrogram shape = ', angleSpectrogram.shape
+
+squareSampleRate, squareSamples = wav.read("./CFP_KEY_2/iPhone6sAudio.wav")
+squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
+
+print 'Square spectrogram shape = ', squareSpectrogram.shape
+
+assert(len(angleFreqs) == len(squareFreqs))
+
+for i in range(0, len(angleFreqs)):
+    print angleFreqs[i]
+    print squareFreqs[i]
