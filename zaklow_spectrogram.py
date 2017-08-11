@@ -125,10 +125,13 @@ binSize = 2**10
 anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
 
 # Trims to about the actual program
-anglesSamples = take_first_seconds(1200, anglesSampleRate, anglesSamples)
+# anglesSamples = take_first_seconds(1200, anglesSampleRate, anglesSamples)
+# anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
+
+anglesSamples = take_first_seconds(400, anglesSampleRate, anglesSamples)
 anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
 
-plotstft_samples(anglesSampleRate, anglesSamples, binSize)
+#plotstft_samples(anglesSampleRate, anglesSamples, binSize)
 
 angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
 
@@ -146,7 +149,7 @@ squareSamples = take_first_seconds(74, squareSampleRate, squareSamples)
 squareSamples = trim_first_seconds(69, squareSampleRate, squareSamples)
 
 
-plotstft_samples(squareSampleRate, squareSamples, binSize)
+#plotstft_samples(squareSampleRate, squareSamples, binSize)
 
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
@@ -157,18 +160,29 @@ assert(len(angleFreqs) == len(squareFreqs))
 for i in range(0, len(angleFreqs)):
     assert(angleFreqs[i] == squareFreqs[i])
 
+singleSample = squareSpectrogram[0]
+print 'singleSample shape =', singleSample.shape
+
 for i in range(0, angleSpectrogram.shape[0]):
     angleSpec = angleSpectrogram[i]
-    print 'angleSpec shape =', angleSpec.shape
+    #print 'angleSpec shape =', angleSpec.shape
+    cor = signal.correlate(angleSpec, singleSample)
 
-    for j in range(0, squareSpectrogram.shape[0]):
-        squareSpec = squareSpectrogram[j]
+    print 'Correlation norm = ', np.linalg.norm(cor)
 
-        cor = signal.correlate(angleSpec, squareSpec)
+def spec_cmp():
+    for i in range(0, angleSpectrogram.shape[0]):
+        angleSpec = angleSpectrogram[i]
+        print 'angleSpec shape =', angleSpec.shape
 
-        print 'Correlation norm =', np.linalg.norm(cor)
+        for j in range(0, squareSpectrogram.shape[0]):
+            squareSpec = squareSpectrogram[j]
 
-        # plt.plot(cor, color='B')
-        # plt.xlabel('Frequency (Khz)')
-        # plt.ylabel('Correlation')
-        # plt.show()
+            cor = signal.correlate(angleSpec, squareSpec)
+
+            print 'Correlation norm =', np.linalg.norm(cor)
+
+            # plt.plot(cor, color='B')
+            # plt.xlabel('Frequency (Khz)')
+            # plt.ylabel('Correlation')
+            # plt.show()
