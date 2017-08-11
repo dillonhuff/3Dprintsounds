@@ -23,12 +23,16 @@ pairs = rtpairs(R, T)
 rad = 1.0
 ts = [0, 0.1, 0.2, 0.3, 0.4]
 
-
-for t in np.arange(0.0, 360, 1.0):
+i = 1
+for t in np.arange(0.0, 2*np.pi, (2*np.pi) / 360):
     xpt = rad*np.cos(t)
     ypt = rad*np.sin(t)
 
-    print 'G1 F1800 X%f Y%f' % (xpt, ypt)
-    plt.plot(rad*np.cos(t), rad*np.sin(t), 'bo')
-    
+    deg = (180.0 / np.pi) * t
+
+    print 'G1 F1800 X%f Y%f E0.01314 ; Line %d, with angle %f' % (xpt, ypt, i, deg)
+
+    i += 1
+    #plt.plot(rad*np.cos(t), rad*np.sin(t), 'bo')
+
 #plt.show()
