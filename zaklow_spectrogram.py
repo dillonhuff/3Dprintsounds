@@ -7,6 +7,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
 from numpy.lib import stride_tricks
+from scipy import signal
 
 """ short time fourier transform of audio signal """
 def stft(sig, frameSize, overlapFac=0.5, window=np.hanning):
@@ -121,11 +122,19 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
 binSize = 2**10
 
 anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
+
+anglesSamples = anglesSamples[0:100000:1]
+
 angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
+
+
 
 print 'Angles spectrogram shape = ', angleSpectrogram.shape
 
 squareSampleRate, squareSamples = wav.read("./CFP_KEY_2/iPhone6sAudio.wav")
+
+squareSamples = anglesSamples[0:100000:1]
+
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
 print 'Square spectrogram shape = ', squareSpectrogram.shape
@@ -133,5 +142,20 @@ print 'Square spectrogram shape = ', squareSpectrogram.shape
 assert(len(angleFreqs) == len(squareFreqs))
 
 for i in range(0, len(angleFreqs)):
-    print angleFreqs[i]
-    print squareFreqs[i]
+    assert(angleFreqs[i] == squareFreqs[i])
+
+for i in range(0, angleSpectrogram.shape[0]):
+    angleSpec = angleSpectrogram[i]
+    print 'angleSpec shape =', angleSpec.shape
+
+    for j in range(0, squareSpectrogram.shape[0]):
+        squareSpec = squareSpectrogram[j]
+
+        cor = signal.correlate(angleSpec, squareSpec)
+
+        print 'Correlation norm =', np.linalg.norm(cor)
+
+        # plt.plot(cor, color='B')
+        # plt.xlabel('Frequency (Khz)')
+        # plt.ylabel('Correlation')
+        # plt.show()
