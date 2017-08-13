@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-T = [1, 10, 20, 30, 40, 50, 60]
-R = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+# T = [1, 10, 20, 30, 40, 50, 60]
+# R = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
 
 
 
@@ -21,7 +21,7 @@ pairs = rtpairs(R, T)
 #     plt.plot(r * np.cos(t), r * np.sin(t), 'bo')
 
 rad = 40
-ts = [0, 0.1, 0.2, 0.3, 0.4]
+#ts = [0, 0.1, 0.2, 0.3, 0.4]
 
 center_x = 60
 center_y = 60
