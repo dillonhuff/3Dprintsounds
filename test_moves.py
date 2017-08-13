@@ -29,7 +29,7 @@ center_y = 60
 increment = (2*np.pi) / 360
 
 
-def move_increments(increment):
+def move_increments(increment, wait_time_milliseconds):
     i = 1
     for t in np.arange(0.0, 2*np.pi, increment): #(2*np.pi) / 360):
         xpt = rad*np.cos(t)
@@ -37,10 +37,12 @@ def move_increments(increment):
 
         deg = (180.0 / np.pi) * t
 
-        print 'G0 F1800 Z0.4'
-        print 'G0 F1800 X%f Y%f' % (center_x, center_y)
-        print 'G0 F1800 Z0.3'
+        print 'G0 F3600 Z0.4'
+        print 'G0 F3600 X%f Y%f' % (center_x, center_y)
+        print 'G0 F3600 Z0.3'
+        print 'G4 P%f' % (wait_time_milliseconds)
         print 'G1 F1800 X%f Y%f E0.01314 ; Line %d, with angle %f' % (center_x + xpt, center_y + ypt, i, deg)
+        print 'G4 P%f' % (wait_time_milliseconds)
 
         i += 1
 
@@ -48,4 +50,4 @@ def deg_to_rad(deg):
     return (deg*np.pi) / 180
 
 increment = deg_to_rad(45)
-move_increments(increment)
+move_increments(increment, 2000)
