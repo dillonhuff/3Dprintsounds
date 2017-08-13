@@ -61,9 +61,7 @@ def build_spectrogram(samplerate, samples, binsize):
 
     return ims, freq
 
-def plotstft_samples(samplerate, samples, binsize, plotpath=None, colormap="jet"):
-    ims, freq = build_spectrogram(samplerate, samples, binsize)
-    
+def plot_spectrogram(ims, freq, samples, samplerate, binsize, xLines=[], plotpath=None, colormap="jet"):
     timebins, freqbins = np.shape(ims)
 
     print ims.shape
@@ -84,7 +82,8 @@ def plotstft_samples(samplerate, samples, binsize, plotpath=None, colormap="jet"
     ylocs = np.int16(np.round(np.linspace(0, freqbins-1, 10)))
     plt.yticks(ylocs, ["%.02f" % freq[i] for i in ylocs])
 
-    #plt.axvline(x=3000)
+    for lineLoc in xLines:
+        plt.axvline(x=lineLoc)
 
     if plotpath:
         plt.savefig(plotpath, bbox_inches="tight")
@@ -92,6 +91,10 @@ def plotstft_samples(samplerate, samples, binsize, plotpath=None, colormap="jet"
         plt.show()
 
     plt.clf()
+    
+def plotstft_samples(samplerate, samples, binsize, plotpath=None, colormap="jet"):
+    ims, freq = build_spectrogram(samplerate, samples, binsize)
+    plot_spectrogram(ims, freq, samples, samplerate, binsize, [1000], plotpath, colormap)
     
 def trim_first_seconds(secondsToTrim, sampleRate, samples):
     startSample = sampleRate*secondsToTrim
@@ -136,8 +139,23 @@ anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
 
 angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
 
+def test_move_split_points(numSegments, angleSpectrogram):
+    segmentSize = angleSpectrogram.shape[0] / numSegments
+    print 'Segment size = ', segmentSize
+    segmentStart = 0
+    segments = []
+    for i in range(0, numSegments):
+        segments.append(segmentStart) #(angleSpectrogram[segmentStart:(segmentStart + segmentSize):1])
+        segmentStart += segmentSize
+    return segments
+
+angleLines = test_move_split_points(360, angleSpectrogram)
+
+plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, angleLines)
 
 print 'Angles spectrogram shape = ', angleSpectrogram.shape
+
+sys.exit()
 
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
 
