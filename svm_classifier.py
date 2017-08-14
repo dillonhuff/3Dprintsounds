@@ -111,6 +111,7 @@ def take_row_ranges(train_ranges, array_2d):
         for j in range(train_ranges[i][0], train_ranges[i][1]):
             wanted.append(j)
 
+    print wanted
     #return array_2d[np.logical_or.reduce([array_2d[:,1] == x for x in wanted])]
     return array_2d[np.array(wanted)]
     
