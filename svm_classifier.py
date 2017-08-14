@@ -1,4 +1,5 @@
 from sklearn import svm
+from sklearn.naive_bayes import GaussianNB
 
 import numpy as np
 from matplotlib import pyplot as plt
@@ -132,16 +133,28 @@ ninety_deg_ranges = [0, 2, 4]
 X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
 
 
-clf = svm.SVC()
+# clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
+#                      hidden_layer_sizes=(500, 200), random_state=1)
+# #clf = svm.SVC()
 
-clf.fit(X, y)
+# clf.fit(X, y)
 
-print 'Score = ', clf.score(X, y)
+# print 'Score = ', clf.score(X, y)
+
+gnb = GaussianNB()
+gnbF = gnb.fit(X, y)
+y_pred = gnbF.predict(X)
+print("Number of mislabeled points out of a total %d points : %d"
+      % (X.shape[0],(y != y_pred).sum()))
 
 # Build test data
 Z, z = build_training_data(test, [0], angleSpectrogram)
 
-print 'Score for test data = ', clf.score(Z, z)
+y_pred = gnbF.predict(Z)
+print("Number of mislabeled points out of a total %d points : %d"
+      % (Z.shape[0],(z != y_pred).sum()))
+
+#print 'Score for test data = ', clf.score(Z, z)
 
 # test_lines = []
 # for r in test:
