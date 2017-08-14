@@ -76,7 +76,7 @@ def clip_ranges(ranges, clip_value):
 
     return rs
 
-angleLines = clip_ranges(angleLines, 10)
+train = clip_ranges(train, 10)
 
 for ls in angleLines:
     print ls
