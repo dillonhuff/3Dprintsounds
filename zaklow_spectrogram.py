@@ -9,7 +9,10 @@ import scipy.io.wavfile as wav
 from numpy.lib import stride_tricks
 from scipy import signal
 
-import spectrogram_utils
+from spectrogram_utils import take_first_seconds
+from spectrogram_utils import trim_first_seconds
+from spectrogram_utils import build_spectrogram
+from spectrogram_utils import plot_spectrogram
 
 binSize = 2**10
 #plotstft("./angles_45/iPhone6sAudio.wav", binSize)
