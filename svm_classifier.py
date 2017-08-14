@@ -130,4 +130,17 @@ def build_training_data(train_ranges, positive_ranges, spec):
 ninety_deg_ranges = [0, 2, 4, 6]
 X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
 
-print y
+
+clf = svm.SVC()
+
+clf.fit(X, y)
+
+# Build test data
+Z, z = build_training_data(test, [], angleSpectrogram)
+
+# Unforgiveable sin of data analysis
+pred = clf.predict(Z)
+
+for p in pred:
+    print 'Predicted = ', p
+    print 'Actual    = ', p
