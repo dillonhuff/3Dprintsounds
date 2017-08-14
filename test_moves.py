@@ -1,27 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# T = [1, 10, 20, 30, 40, 50, 60]
-# R = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+prelude = ';FLAVOR:RepRap\n;TIME:711\n;Filament used: 0.153629m\n;Layer height: 0.1\n;Generated with Cura_SteamEngine 2.5.0\nM190 S60\nM104 S200\nM109 S200\nG28 ;Home\nG1 Z15.0 F6000 ;Move the platform down 15mm\n;Prime the extruder\nG92 E0\nG1 F200 E3\nG92 E0\n;LAYER_COUNT:58\n;LAYER:0\nM107\n'
 
-
-
-def rtpairs(r, n):
-
-    for i in range(len(r)):
-       for j in range(n[i]):    
-        yield r[i], j*(2 * np.pi / n[i])
-
-pairs = rtpairs(R, T)
-
-#print 'Length = ', len(pairs)
-
-# for r, t in rtpairs(R, T):
-#     print r, ' ', t
-#     plt.plot(r * np.cos(t), r * np.sin(t), 'bo')
+postscript = ';Finish sequence\nM107\nM104 S0\nM140 S0\n;Retract the filament\nG92 E1\nG1 E-1 F300\nG28 X0 Y0\nM84\nM104 S0\n;End of Gcode\n'
 
 rad = 40
-#ts = [0, 0.1, 0.2, 0.3, 0.4]
+
 
 center_x = 60
 center_y = 60
@@ -40,9 +25,9 @@ def move_increments(increment, wait_time_milliseconds):
         print 'G0 F3600 Z0.4'
         print 'G0 F3600 X%f Y%f' % (center_x, center_y)
         print 'G0 F3600 Z0.3'
-        print 'G4 P%f' % (wait_time_milliseconds)
+        print 'G4 P%d' % (wait_time_milliseconds)
         print 'G1 F1800 X%f Y%f E0.01314 ; Line %d, with angle %f' % (center_x + xpt, center_y + ypt, i, deg)
-        print 'G4 P%f' % (wait_time_milliseconds)
+        print 'G4 P%d' % (wait_time_milliseconds)
 
         i += 1
 
@@ -50,4 +35,8 @@ def deg_to_rad(deg):
     return (deg*np.pi) / 180
 
 increment = deg_to_rad(45)
-move_increments(increment, 2000)
+
+print prelude
+move_increments(increment, 3000)
+print
+print postscript

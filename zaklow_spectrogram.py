@@ -120,10 +120,12 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     #samples = samples #samples[startS:endS:1]
     plotstft_samples(samplerate, samples, binsize, plotpath, colormap)
 
+binSize = 2**10
+plotstft("./angles_45/iPhone6sAudio.wav", binSize)
 #plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**10)
 #plotstft("./angles/iPhone6sAudio.wav", 2**10)
 
-binSize = 2**10
+sys.exit()
 
 anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
 
@@ -136,6 +138,9 @@ anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
 
 
 #plotstft_samples(anglesSampleRate, anglesSamples, binSize)
+
+
+
 
 angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
 
@@ -154,8 +159,6 @@ angleLines = test_move_split_points(360, angleSpectrogram)
 plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, angleLines)
 
 print 'Angles spectrogram shape = ', angleSpectrogram.shape
-
-sys.exit()
 
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
 
