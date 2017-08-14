@@ -139,8 +139,10 @@ clf.fit(X, y)
 Z, z = build_training_data(test, [], angleSpectrogram)
 
 # Unforgiveable sin of data analysis
-pred = clf.predict(Z)
+pred = clf.predict(X)
 
-for p in pred:
+#for p in pred:
+for i in range(0, len(pred)):
+    p = pred[i]
     print 'Predicted = ', p
-    print 'Actual    = ', p
+    print 'Actual = ', y[i]
