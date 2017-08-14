@@ -153,7 +153,15 @@ angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples
 
 # angleLines = test_move_split_points(360, angleSpectrogram)
 
-angleLines = [100, 500, 900, 1400, 1700, 2100, 2600, 3000, 3400, 3700, 4200, 4600, 5000, 5400, 5800, 6200]
+angleLines = [250, 400,
+              1060, 1200,
+              1860, 2015,
+              2675, 2825,
+              3475, 3640,
+              4285, 4450,
+              5100, 5250,
+              5900, 6050]
+
 plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, angleLines)
 
 sys.exit()
