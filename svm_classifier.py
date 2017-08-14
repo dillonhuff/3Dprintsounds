@@ -129,3 +129,5 @@ def build_training_data(train_ranges, positive_ranges, spec):
 
 ninety_deg_ranges = [0, 2, 4, 6]
 X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
+
+print y
