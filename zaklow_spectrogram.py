@@ -164,8 +164,6 @@ angleLines = [250, 400,
 
 plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, angleLines)
 
-sys.exit()
-
 print 'Angles spectrogram shape = ', angleSpectrogram.shape
 
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
@@ -179,9 +177,13 @@ squareSamples = take_first_seconds(74, squareSampleRate, squareSamples)
 squareSamples = trim_first_seconds(69, squareSampleRate, squareSamples)
 
 
-plotstft_samples(squareSampleRate, squareSamples, binSize)
+#plotstft_samples(squareSampleRate, squareSamples, binSize)
 
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
+
+plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
+
+sys.exit()
 
 print 'Square spectrogram shape = ', squareSpectrogram.shape
 
