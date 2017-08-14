@@ -54,8 +54,8 @@ angleLines = [(250, 400),
               (5100, 5250),
               (5900, 6050)]
 
-train = angleLines[0:7]
-test = angleLines[7:8]
+train = angleLines[0:6]
+test = angleLines[6:8]
 
 print '# of training sample groups = ', len(train)
 print '# of testing sample groups  = ', len(test)
@@ -128,7 +128,7 @@ def build_training_data(train_ranges, positive_ranges, spec):
 
     return train_vectors, train_labels
 
-ninety_deg_ranges = [0, 2, 4, 6]
+ninety_deg_ranges = [0, 2, 4]
 X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
 
 
@@ -137,7 +137,7 @@ clf = svm.SVC()
 clf.fit(X, y)
 
 # Build test data
-Z, z = build_training_data(test, [], angleSpectrogram)
+Z, z = build_training_data(test, [0], angleSpectrogram)
 
 test_lines = []
 for r in test:
