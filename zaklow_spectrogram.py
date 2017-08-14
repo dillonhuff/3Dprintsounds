@@ -121,42 +121,42 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     plotstft_samples(samplerate, samples, binsize, plotpath, colormap)
 
 binSize = 2**10
-plotstft("./angles_45/iPhone6sAudio.wav", binSize)
+#plotstft("./angles_45/iPhone6sAudio.wav", binSize)
 #plotstft("./CFP_KEY_2/iPhone6sAudio.wav", 2**10)
 #plotstft("./angles/iPhone6sAudio.wav", 2**10)
 
-sys.exit()
 
-anglesSampleRate, anglesSamples = wav.read("./angles/iPhone6sAudio.wav")
+anglesSampleRate, anglesSamples = wav.read("./angles_45/iPhone6sAudio.wav")
+#wav.read("./angles/iPhone6sAudio.wav")
 
 # Trims to about the actual program
-anglesSamples = take_first_seconds(1200, anglesSampleRate, anglesSamples)
-anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
+#anglesSamples = take_first_seconds(1200, anglesSampleRate, anglesSamples)
+#anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
 
-# anglesSamples = take_first_seconds(400, anglesSampleRate, anglesSamples)
-# anglesSamples = trim_first_seconds(150, anglesSampleRate, anglesSamples)
+anglesSamples = take_first_seconds(100, anglesSampleRate, anglesSamples)
+anglesSamples = trim_first_seconds(33, anglesSampleRate, anglesSamples)
 
 
 #plotstft_samples(anglesSampleRate, anglesSamples, binSize)
 
-
-
-
 angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
 
-def test_move_split_points(numSegments, angleSpectrogram):
-    segmentSize = angleSpectrogram.shape[0] / numSegments
-    print 'Segment size = ', segmentSize
-    segmentStart = 0
-    segments = []
-    for i in range(0, numSegments):
-        segments.append(segmentStart) #(angleSpectrogram[segmentStart:(segmentStart + segmentSize):1])
-        segmentStart += segmentSize
-    return segments
+# def test_move_split_points(numSegments, angleSpectrogram):
+#     segmentSize = angleSpectrogram.shape[0] / numSegments
+#     print 'Segment size = ', segmentSize
+#     segmentStart = 0
+#     segments = []
+#     for i in range(0, numSegments):
+#         segments.append(segmentStart) #(angleSpectrogram[segmentStart:(segmentStart + segmentSize):1])
+#         segmentStart += segmentSize
+#     return segments
 
-angleLines = test_move_split_points(360, angleSpectrogram)
+# angleLines = test_move_split_points(360, angleSpectrogram)
 
+angleLines = [100, 500, 900, 1400, 1700, 2100, 2600, 3000, 3400, 3700, 4200, 4600, 5000, 5400, 5800, 6200]
 plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, angleLines)
+
+sys.exit()
 
 print 'Angles spectrogram shape = ', angleSpectrogram.shape
 
