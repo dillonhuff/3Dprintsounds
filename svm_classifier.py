@@ -12,7 +12,6 @@ from spectrogram_utils import build_spectrogram
 from spectrogram_utils import plot_spectrogram
 
 X = [[0, 1], [1, 1]]
-
 y = [0, 1]
 
 clf = svm.SVC()
@@ -45,8 +44,6 @@ angleSpectrogram = angleSpectrogram[:, 0:325]
 
 print 'Spectrogram shape =', angleSpectrogram.shape
 
-
-
 ## Approximate ranges for each train / test movement
 angleLines = [(250, 400),
               (1060, 1200),
@@ -60,8 +57,37 @@ angleLines = [(250, 400),
 train = angleLines[0:6]
 test = angleLines[6:7]
 
-print '# of training samples = ', len(train)
-print '# of testing samples  = ', len(test)
+print '# of training sample groups = ', len(train)
+print '# of testing sample groups  = ', len(test)
+
+
 
 ## Plot the spectrogram to view consistency
-plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
+#plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
+
+# Assemble training and test arrays
+
+## Clip the traning ranges
+
+def clip_ranges(ranges, clip_value):
+    rs = []
+    for r in ranges:
+        rs.append((r[0] + clip_value, r[1] - clip_value))
+
+    return rs
+
+angleLines = clip_ranges(angleLines, 10)
+
+for ls in angleLines:
+    print ls
+
+sys.exit()
+
+def build_training_data(train_ranges, positive_ranges, spec):
+    train_labels = build_labels(train_ranges, positive_ranges)
+    print '# of training labels = ', len(train_labels)
+    sys.exit()
+    return train_vectors, train_labels
+
+ninety_deg_ranges = [0, 2, 4, 6]
+X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
