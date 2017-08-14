@@ -54,21 +54,18 @@ angleLines = [(250, 400),
               (5100, 5250),
               (5900, 6050)]
 
-train = angleLines[0:6]
-test = angleLines[6:7]
+train = angleLines[0:7]
+test = angleLines[7:8]
 
 print '# of training sample groups = ', len(train)
 print '# of testing sample groups  = ', len(test)
-
-
 
 ## Plot the spectrogram to view consistency
 #plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
 
 # Assemble training and test arrays
 
-## Clip the traning ranges
-
+## Clip the training and test ranges to be sure they are correct
 def clip_ranges(ranges, clip_value):
     rs = []
     for r in ranges:
@@ -77,16 +74,57 @@ def clip_ranges(ranges, clip_value):
     return rs
 
 train = clip_ranges(train, 10)
+test = clip_ranges(test, 10)
 
-for ls in angleLines:
+print 'Train ranges'
+for ls in train:
     print ls
 
-sys.exit()
+print 'Test ranges'
+for ls in test:
+    print ls
 
+## Put the training data into matrices
+def build_labels(train_ranges, positive_ranges):
+    labels = []
+    for i in range(0, len(train_ranges)):
+        samples_in_range = train_ranges[i][1] - train_ranges[i][0]
+        print 'Samples in range =', samples_in_range
+        
+        if i in positive_ranges:
+            for j in range(0, samples_in_range):
+                labels.append(1)
+        else:
+            for j in range(0, samples_in_range):
+                labels.append(0)
+            
+
+    return labels
+
+def take_row_ranges(train_ranges, array_2d):
+    wanted = []
+
+    for i in range(0, len(train_ranges)):
+        samples_in_range = train_ranges[i][1] - train_ranges[i][0]
+        print 'Samples in range =', samples_in_range
+        
+        for j in range(train_ranges[i][0], train_ranges[i][1]):
+            wanted.append(j)
+
+    #return array_2d[np.logical_or.reduce([array_2d[:,1] == x for x in wanted])]
+    return array_2d[np.array(wanted)]
+    
 def build_training_data(train_ranges, positive_ranges, spec):
     train_labels = build_labels(train_ranges, positive_ranges)
+
     print '# of training labels = ', len(train_labels)
-    sys.exit()
+
+    train_vectors = take_row_ranges(train_ranges, spec)
+
+    print '# of training vectors = ', train_vectors.shape[0]
+
+    assert(train_vectors.shape[0] == len(train_labels))
+
     return train_vectors, train_labels
 
 ninety_deg_ranges = [0, 2, 4, 6]
