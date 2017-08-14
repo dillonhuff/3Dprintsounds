@@ -181,9 +181,7 @@ squareSamples = trim_first_seconds(69, squareSampleRate, squareSamples)
 
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
-plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
-
-sys.exit()
+plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [0, 150])
 
 print 'Square spectrogram shape = ', squareSpectrogram.shape
 
@@ -211,22 +209,26 @@ def break_spectrogram_into_segments(numSegments, angleSpectrogram):
         segmentStart += segmentSize
     return segments
     
-moves = break_spectrogram_into_segments(360, angleSpectrogram)
+#moves = break_spectrogram_into_segments(360, angleSpectrogram)
+#assert(len(moves) == 360)
 
-assert(len(moves) == 360)
+for i in range(0, len(angleLines), 2):
+    moveNum = (angleLines[i + 1] + angleLines[i]) / 2
 
-for i in range(0, len(moves)):
-    testMove = moves[i]
+
+    angleSpec = angleSpectrogram[moveNum]
+
+    plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [moveNum])
     # Pick a representative of the given move angle
-    angleSpec = testMove[testMove.shape[0] / 2]
+    #angleSpec = testMove[testMove.shape[0] / 2]
 
     corVec = signal.correlate(angleSpec, singleSample)
-    cor = np.linalg.norm(corVec)
-    print 'Correlation with move angle', i, ' = ', cor
+    cor = np.amax(corVec) #np.linalg.norm(corVec)
+    print 'Max Correlation with move angle', i, ' = ', cor
 
     corVec = signal.correlate(angleSpec, singleSample90)
-    cor = np.linalg.norm(corVec)
-    print 'Correlation of 90 degree move with angle', i, ' = ', cor
+    cor = np.amax(corVec) #np.linalg.norm(corVec)
+    print 'Max Correlation of 90 degree move with angle', i, ' = ', cor
     
     #correlations.append(np.linalg.norm(cor))
     
