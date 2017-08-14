@@ -136,21 +136,25 @@ clf = svm.SVC()
 
 clf.fit(X, y)
 
+print 'Score = ', clf.score(X, y)
+
 # Build test data
 Z, z = build_training_data(test, [0], angleSpectrogram)
 
-test_lines = []
-for r in test:
-    test_lines.append(r[0])
-    test_lines.append(r[1])
+print 'Score for test data = ', clf.score(Z, z)
 
-plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, test_lines)
+# test_lines = []
+# for r in test:
+#     test_lines.append(r[0])
+#     test_lines.append(r[1])
 
-# Unforgiveable sin of data analysis
-pred = clf.predict(Z)
+# plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, test_lines)
 
-#for p in pred:
-for i in range(0, len(pred)):
-    p = pred[i]
-    print 'Predicted = ', p
-    print 'Actual = ', z[i]
+# # Unforgiveable sin of data analysis
+# pred = clf.predict(Z)
+
+# #for p in pred:
+# for i in range(0, len(pred)):
+#     p = pred[i]
+#     print 'Predicted = ', p
+#     print 'Actual = ', z[i]
