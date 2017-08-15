@@ -11,8 +11,15 @@ rad = 40
 center_x = 60
 center_y = 60
 
-increment = (2*np.pi) / 360
+def deg_to_rad(deg):
+    return (deg*np.pi) / 180
 
+def rad_to_deg(deg):
+    return (180.0 / np.pi) * deg
+
+increment = deg_to_rad(10) #(2*np.pi) / 360
+
+print 'Increment = ', increment
 
 def move_increments(increment, wait_time_milliseconds):
     i = 1
@@ -20,7 +27,7 @@ def move_increments(increment, wait_time_milliseconds):
         xpt = rad*np.cos(t)
         ypt = rad*np.sin(t)
 
-        deg = (180.0 / np.pi) * t
+        deg = rad_to_deg(t) #(180.0 / np.pi) * t
 
         print 'G0 F3600 Z0.4'
         print 'G0 F3600 X%f Y%f' % (center_x, center_y)
@@ -30,9 +37,6 @@ def move_increments(increment, wait_time_milliseconds):
         print 'G4 P%d' % (wait_time_milliseconds)
 
         i += 1
-
-def deg_to_rad(deg):
-    return (deg*np.pi) / 180
 
 increment = deg_to_rad(45)
 
