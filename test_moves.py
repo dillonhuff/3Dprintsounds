@@ -17,9 +17,9 @@ def deg_to_rad(deg):
 def rad_to_deg(deg):
     return (180.0 / np.pi) * deg
 
-increment = deg_to_rad(10) #(2*np.pi) / 360
+# increment = deg_to_rad(10) #(2*np.pi) / 360
 
-print 'Increment = ', increment
+# print 'Increment = ', increment
 
 def move_increments(increment, wait_time_milliseconds):
     i = 1
@@ -38,7 +38,7 @@ def move_increments(increment, wait_time_milliseconds):
 
         i += 1
 
-increment = deg_to_rad(45)
+increment = deg_to_rad(10)
 
 print prelude
 move_increments(increment, 3000)
