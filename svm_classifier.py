@@ -94,10 +94,10 @@ def build_labels(train_ranges, positive_ranges):
         
         if i in positive_ranges:
             for j in range(0, samples_in_range):
-                labels.append(1)
+                labels.append(90)
         else:
             for j in range(0, samples_in_range):
-                labels.append(0)
+                labels.append(45)
             
 
     return labels
@@ -184,6 +184,8 @@ y_pred = gnbF.predict(Sq)
 print("Number of mislabeled points in test set out of a total %d points : %d"
       % (Sq.shape[0],(sq != y_pred).sum()))
 
+for pt in y_pred:
+    print pt
 
 #print 'Score for test data = ', clf.score(Z, z)
 
