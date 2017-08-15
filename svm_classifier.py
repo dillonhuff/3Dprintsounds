@@ -1,11 +1,13 @@
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
+import sklearn.metrics as metrics
 
 import numpy as np
 from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
 from numpy.lib import stride_tricks
 from scipy import signal
+
 
 from spectrogram_utils import take_first_seconds
 from spectrogram_utils import trim_first_seconds
@@ -90,30 +92,32 @@ def build_labels(train_ranges, positive_ranges):
     labels = []
     for i in range(0, len(train_ranges)):
         samples_in_range = train_ranges[i][1] - train_ranges[i][0]
-        print 'Samples in range =', samples_in_range
+        #print 'Samples in range =', samples_in_range
         
         if i in positive_ranges:
             for j in range(0, samples_in_range):
-                labels.append(90)
+                labels.append(1)
         else:
             for j in range(0, samples_in_range):
-                labels.append(45)
+                labels.append(0)
             
 
     return labels
 
-def take_row_ranges(train_ranges, array_2d):
+def wanted_data(train_ranges):
     wanted = []
 
     for i in range(0, len(train_ranges)):
         samples_in_range = train_ranges[i][1] - train_ranges[i][0]
-        print 'Samples in range =', samples_in_range
         
         for j in range(train_ranges[i][0], train_ranges[i][1]):
             wanted.append(j)
 
-    print wanted
-    #return array_2d[np.logical_or.reduce([array_2d[:,1] == x for x in wanted])]
+    return wanted
+
+def take_row_ranges(train_ranges, array_2d):
+    wanted = wanted_data(train_ranges)
+
     return array_2d[np.array(wanted)]
     
 def build_training_data(train_ranges, positive_ranges, spec):
@@ -143,23 +147,40 @@ X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
 
 gnb = GaussianNB()
 gnbF = gnb.fit(X, y)
-y_pred = gnbF.predict(X)
-print("Number of mislabeled points in training set out of a total %d points : %d"
-      % (X.shape[0],(y != y_pred).sum()))
+
+# Create prediction test function
+def predict_and_score(all_square_lines, positive_range_inds, squareSpectrogram):
+    Sq, sq = build_training_data(all_square_lines,
+                                 positive_range_inds,
+                                 squareSpectrogram)
+
+    y_pred = gnbF.predict(Sq)
+    print("Number of mislabeled points in undivided test set out of a total %d points : %d"
+          % (Sq.shape[0],(sq != y_pred).sum()))
+
+    print 'Precision score =', metrics.precision_score(sq, y_pred, [45, 90])
+    print 'Recall score =', metrics.recall_score(sq, y_pred, [45, 90])
+
+print '--- Score on training data set ----'
+predict_and_score(train, ninety_deg_ranges, angleSpectrogram)
+# y_pred = gnbF.predict(X)
+# print("Number of mislabeled points in training set out of a total %d points : %d"
+#       % (X.shape[0],(y != y_pred).sum()))
 
 # Build test data
-Z, z = build_training_data(test, [0], angleSpectrogram)
+predict_and_score(test, [0], angleSpectrogram)
+# Z, z = build_training_data(test, [0], angleSpectrogram)
 
-y_pred = gnbF.predict(Z)
-print("Number of mislabeled points in test set out of a total %d points : %d"
-      % (Z.shape[0],(z != y_pred).sum()))
+# y_pred = gnbF.predict(Z)
+# print("Number of mislabeled points in test set out of a total %d points : %d"
+#       % (Z.shape[0],(z != y_pred).sum()))
 
 # Build test data from different file
-Z, z = build_training_data(test, [0], angleSpectrogram)
+# Z, z = build_training_data(test, [0], angleSpectrogram)
 
-y_pred = gnbF.predict(Z)
-print("Number of mislabeled points in test set out of a total %d points : %d"
-      % (Z.shape[0],(z != y_pred).sum()))
+# y_pred = gnbF.predict(Z)
+# print("Number of mislabeled points in test set out of a total %d points : %d"
+#       % (Z.shape[0],(z != y_pred).sum()))
 
 binSize = 2**10
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
@@ -172,20 +193,40 @@ squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSampl
 ## Clip away the high band frequencies with no real activity
 squareSpectrogram = squareSpectrogram[:, 0:325]
 
+# Test on transitional data
 square_lines = [(60, 185),
                 (190, 310),
                 (320, 445),
                 (455, 575)]
-plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
+#plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
+
+print '---- Score on clipped square cutting dataset ----'
+predict_and_score(square_lines, [0, 1, 2, 3], squareSpectrogram)
 
 Sq, sq = build_training_data(square_lines, [0, 1, 2, 3], squareSpectrogram)
-
 y_pred = gnbF.predict(Sq)
-print("Number of mislabeled points in test set out of a total %d points : %d"
-      % (Sq.shape[0],(sq != y_pred).sum()))
+# print("Number of mislabeled points in test set out of a total %d points : %d"
+#       % (Sq.shape[0],(sq != y_pred).sum()))
 
-for pt in y_pred:
-    print pt
+    
+# Test on entire dataset
+
+all_square_lines = [(60, 575)]
+
+print '---- Score on entire square printing dataset ----'
+predict_and_score(all_square_lines, [0], squareSpectrogram)
+
+inds = wanted_data(all_square_lines)
+
+wrong_labels = []
+for i in range(0, len(sq)):
+    if sq[i] != y_pred[i]:
+        wrong_labels.append(inds[i])
+
+plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, wrong_labels)
+
+# for pt in y_pred:
+#     print pt
 
 #print 'Score for test data = ', clf.score(Z, z)
 
