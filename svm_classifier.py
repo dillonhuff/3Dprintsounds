@@ -9,6 +9,7 @@ from numpy.lib import stride_tricks
 from scipy import signal
 
 
+from spectrogram_utils import plotstft
 from spectrogram_utils import take_first_seconds
 from spectrogram_utils import trim_first_seconds
 from spectrogram_utils import build_spectrogram
@@ -32,6 +33,9 @@ for p in pred:
 ## Build the full spectrogram for all input data
 binSize = 2**10
 #plotstft("./angles/iPhone6sAudio.wav", 2**10)
+plotstft("./angles_10/iPhone6sAudio.wav", 2**10)
+
+sys.exit()
 
 anglesSampleRate, anglesSamples = wav.read("./angles_45/iPhone6sAudio.wav")
 
@@ -182,7 +186,6 @@ predict_and_score(test, [0], angleSpectrogram)
 # print("Number of mislabeled points in test set out of a total %d points : %d"
 #       % (Z.shape[0],(z != y_pred).sum()))
 
-binSize = 2**10
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
 
 squareSamples = take_first_seconds(77, squareSampleRate, squareSamples)
