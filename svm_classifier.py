@@ -144,15 +144,33 @@ X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
 gnb = GaussianNB()
 gnbF = gnb.fit(X, y)
 y_pred = gnbF.predict(X)
-print("Number of mislabeled points out of a total %d points : %d"
+print("Number of mislabeled points in training set out of a total %d points : %d"
       % (X.shape[0],(y != y_pred).sum()))
 
 # Build test data
 Z, z = build_training_data(test, [0], angleSpectrogram)
 
 y_pred = gnbF.predict(Z)
-print("Number of mislabeled points out of a total %d points : %d"
+print("Number of mislabeled points in test set out of a total %d points : %d"
       % (Z.shape[0],(z != y_pred).sum()))
+
+# Build test data from different file
+Z, z = build_training_data(test, [0], angleSpectrogram)
+
+y_pred = gnbF.predict(Z)
+print("Number of mislabeled points in test set out of a total %d points : %d"
+      % (Z.shape[0],(z != y_pred).sum()))
+
+binSize = 2**10
+#plotstft("./angles/iPhone6sAudio.wav", 2**10)
+
+squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
+squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
+
+## Clip away the high band frequencies with no real activity
+squareSpectrogram = squareSpectrogram[:, 0:325]
+
+plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
 
 #print 'Score for test data = ', clf.score(Z, z)
 
