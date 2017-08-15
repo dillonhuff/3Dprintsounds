@@ -162,9 +162,11 @@ print("Number of mislabeled points in test set out of a total %d points : %d"
       % (Z.shape[0],(z != y_pred).sum()))
 
 binSize = 2**10
-#plotstft("./angles/iPhone6sAudio.wav", 2**10)
-
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
+
+squareSamples = take_first_seconds(77, squareSampleRate, squareSamples)
+squareSamples = trim_first_seconds(68, squareSampleRate, squareSamples)
+
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
 ## Clip away the high band frequencies with no real activity
