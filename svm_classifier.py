@@ -30,10 +30,48 @@ for p in pred:
 # Proper numpy based training data with spectrogram
 
 
+## Set frequency cutoff
+freq_cutoff = 325
+
 ## Build the full spectrogram for all input data
 binSize = 2**10
 #plotstft("./angles/iPhone6sAudio.wav", 2**10)
-plotstft("./angles_10/iPhone6sAudio.wav", 2**10)
+#plotstft("./angles_10/iPhone6sAudio.wav", 2**10)
+
+ang10SampleRate, ang10Samples = wav.read("./angles_10/iPhone6sAudio.wav")
+
+ang10Samples = take_first_seconds(80, ang10SampleRate, ang10Samples)
+#ang10Samples = trim_first_seconds(25, ang10SampleRate, ang10Samples)
+
+
+ang10Spectrogram, ang10Freqs = build_spectrogram(ang10SampleRate, ang10Samples, binSize)
+
+ang10Spectrogram = ang10Spectrogram[:, 0:freq_cutoff]
+
+prog_start = 3200
+## 1800 mm / min -> 30 mm / sec
+feedrate = 1800.0 / 60.0
+move_distance = 40.0
+move_time = move_distance / feedrate
+fast_move_time = move_distance / (2*feedrate)
+
+#move_samples = move_time * ang10SampleRate
+
+spec_samples_per_second = 2*ang10SampleRate / binSize
+
+#move_spec_samples = 2*((move_time * ang10SampleRate) / binSize)
+
+move_spec_samples = spec_samples_per_second*move_time
+fast_move_spec_samples = spec_samples_per_second*fast_move_time
+
+wait_spec_samples = 3*spec_samples_per_second
+
+#print 'Samples per move     = ', move_samples
+print 'Spectrogram per move = ', move_spec_samples
+
+ang10Lines = [prog_start, prog_start + move_spec_samples,
+              prog_start + move_spec_samples + wait_spec_samples] #2*wait_spec_samples]# + fast_move_spec_samples]
+plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
 sys.exit()
 
@@ -47,7 +85,7 @@ angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples
 print 'Spectrogram shape =', angleSpectrogram.shape
 
 ## Clip away the high band frequencies with no real activity
-angleSpectrogram = angleSpectrogram[:, 0:325]
+angleSpectrogram = angleSpectrogram[:, 0:freq_cutoff]
 
 print 'Spectrogram shape =', angleSpectrogram.shape
 
@@ -194,7 +232,7 @@ squareSamples = trim_first_seconds(68, squareSampleRate, squareSamples)
 squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
 ## Clip away the high band frequencies with no real activity
-squareSpectrogram = squareSpectrogram[:, 0:325]
+squareSpectrogram = squareSpectrogram[:, 0:freq_cutoff]
 
 # Test on transitional data
 square_lines = [(60, 185),
