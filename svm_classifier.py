@@ -77,13 +77,13 @@ def clip_ranges(ranges, clip_value):
 train = clip_ranges(train, 10)
 test = clip_ranges(test, 10)
 
-print 'Train ranges'
-for ls in train:
-    print ls
+# print 'Train ranges'
+# for ls in train:
+#     print ls
 
-print 'Test ranges'
-for ls in test:
-    print ls
+# print 'Test ranges'
+# for ls in test:
+#     print ls
 
 ## Put the training data into matrices
 def build_labels(train_ranges, positive_ranges):
