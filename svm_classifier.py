@@ -172,7 +172,18 @@ squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSampl
 ## Clip away the high band frequencies with no real activity
 squareSpectrogram = squareSpectrogram[:, 0:325]
 
+square_lines = [(60, 185),
+                (190, 310),
+                (320, 445),
+                (455, 575)]
 plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
+
+Sq, sq = build_training_data(square_lines, [0, 1, 2, 3], squareSpectrogram)
+
+y_pred = gnbF.predict(Sq)
+print("Number of mislabeled points in test set out of a total %d points : %d"
+      % (Sq.shape[0],(sq != y_pred).sum()))
+
 
 #print 'Score for test data = ', clf.score(Z, z)
 
