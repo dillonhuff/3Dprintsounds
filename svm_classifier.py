@@ -64,7 +64,7 @@ print '# of training sample groups = ', len(train)
 print '# of testing sample groups  = ', len(test)
 
 ## Plot the spectrogram to view consistency
-#plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
+plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
 
 # Assemble training and test arrays
 
