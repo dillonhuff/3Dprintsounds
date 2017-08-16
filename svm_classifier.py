@@ -47,9 +47,20 @@ num_samples = total_time * (ang10SampleRate / binSize)
 #plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 ## Print out spectrogram time increments
 timebins, freqbins = np.shape(ang10Spectrogram)
+
 xlocs = np.float32(np.linspace(0, timebins-1, 5))
+print '### xlocs'
+for x in xlocs:
+    print x
+
+def sample_to_time(sample_num, total_num_samples, num_times, binSize, sample_rate):
+    return ((sample_num*total_num_samples/num_times)+(0.5*binSize))/sample_rate
+
+print 'Sample 8200 is at time ', sample_to_time(8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
+
 plot_times = ((xlocs*len(ang10Samples)/timebins)+(0.5*binSize))/ang10SampleRate
 
+print '### Plot times'
 for l in plot_times:
     print l
 
