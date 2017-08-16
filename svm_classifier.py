@@ -107,7 +107,7 @@ wait_spec_samples = time_to_sample(3, len(ang10Samples), timebins, binSize, ang1
 print 'Spectrogram per move = ', move_spec_samples
 
 ang10Lines = [prog_start, prog_start + move_spec_samples,
-              prog_start + move_spec_samples + 2*wait_spec_samples + fast_move_spec_samples] #2*wait_spec_samples]# + fast_move_spec_samples]
+              prog_start + move_spec_samples + wait_spec_samples + fast_move_spec_samples] #2*wait_spec_samples]# + fast_move_spec_samples]
 plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
 sys.exit()
