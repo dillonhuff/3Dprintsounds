@@ -10,6 +10,7 @@ from scipy import signal
 import scipy
 
 from classifier_utils import build_training_data
+from classifier_utils import clip_ranges
 from classifier_utils import predict_and_score
 
 from spectrogram_utils import plotstft
@@ -32,8 +33,6 @@ freq_cutoff = 325
 
 ## Build the full spectrogram for all input data
 binSize = 2**10
-#plotstft("./angles/iPhone6sAudio.wav", 2**10)
-#plotstft("./angles_10/iPhone6sAudio.wav", 2**10)
 
 ang10SampleRate, ang10Samples = wav.read("./angles_10/iPhone6sAudio.wav")
 
@@ -41,15 +40,11 @@ total_samples = ang10Samples.shape[0]
 
 print 'Total samples =', total_samples
 
-#ang10Samples = take_first_seconds(200, ang10SampleRate, ang10Samples)
-#ang10Samples = trim_first_seconds(25, ang10SampleRate, ang10Samples)
-
 ang10Spectrogram, ang10Freqs = build_spectrogram(ang10SampleRate, ang10Samples, binSize)
 
 total_time = 360
 num_samples = total_time * (ang10SampleRate / binSize)
 
-#plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 ## Print out spectrogram time increments
 timebins, freqbins = np.shape(ang10Spectrogram)
 
@@ -62,14 +57,6 @@ time_for_8200 = sample_to_time(8200, len(ang10Samples), timebins, binSize, ang10
 print 'Sample 8200 is at time ', time_for_8200
 
 print 'Sample 8200 is at time to sample', time_to_sample(time_for_8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
-
-plot_times = ((xlocs*len(ang10Samples)/timebins)+(0.5*binSize))/ang10SampleRate
-
-print '### Plot times'
-for l in plot_times:
-    print l
-
-#sys.exit()
 
 ang10Spectrogram = ang10Spectrogram[:, 0:freq_cutoff]
 
@@ -199,38 +186,14 @@ test = clip_ranges(test, 10)
 ninety_deg_ranges = [0, 2, 4]
 X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
 
-
-# clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
-#                      hidden_layer_sizes=(500, 200), random_state=1)
-# #clf = svm.SVC()
-
-# clf.fit(X, y)
-
-# print 'Score = ', clf.score(X, y)
-
 gnb = GaussianNB()
 gnbF = gnb.fit(X, y)
 
 print '--- Score on training data set ----'
 predict_and_score(train, ninety_deg_ranges, angleSpectrogram)
-# y_pred = gnbF.predict(X)
-# print("Number of mislabeled points in training set out of a total %d points : %d"
-#       % (X.shape[0],(y != y_pred).sum()))
 
 # Build test data
 predict_and_score(test, [0], angleSpectrogram)
-# Z, z = build_training_data(test, [0], angleSpectrogram)
-
-# y_pred = gnbF.predict(Z)
-# print("Number of mislabeled points in test set out of a total %d points : %d"
-#       % (Z.shape[0],(z != y_pred).sum()))
-
-# Build test data from different file
-# Z, z = build_training_data(test, [0], angleSpectrogram)
-
-# y_pred = gnbF.predict(Z)
-# print("Number of mislabeled points in test set out of a total %d points : %d"
-#       % (Z.shape[0],(z != y_pred).sum()))
 
 squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
 

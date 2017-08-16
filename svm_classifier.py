@@ -10,6 +10,7 @@ from scipy import signal
 import scipy
 
 from classifier_utils import build_training_data
+from classifier_utils import clip_ranges
 from classifier_utils import predict_and_score
 
 from spectrogram_utils import plotstft
@@ -176,14 +177,6 @@ print '# of testing sample groups  = ', len(test)
 plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
 
 # Assemble training and test arrays
-
-## Clip the training and test ranges to be sure they are correct
-def clip_ranges(ranges, clip_value):
-    rs = []
-    for r in ranges:
-        rs.append((r[0] + clip_value, r[1] - clip_value))
-
-    return rs
 
 train = clip_ranges(train, 10)
 test = clip_ranges(test, 10)

@@ -57,3 +57,11 @@ def predict_and_score(all_square_lines, positive_range_inds, squareSpectrogram):
     print 'Precision score =', metrics.precision_score(sq, y_pred, [45, 90])
     print 'Recall score =', metrics.recall_score(sq, y_pred, [45, 90])
 
+## Clip the training and test ranges to be sure they are correct
+def clip_ranges(ranges, clip_value):
+    rs = []
+    for r in ranges:
+        rs.append((r[0] + clip_value, r[1] - clip_value))
+
+    return rs
+
