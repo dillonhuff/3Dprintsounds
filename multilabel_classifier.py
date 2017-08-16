@@ -1,5 +1,6 @@
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import MultinomialNB
 import sklearn.metrics as metrics
 
 import numpy as np
@@ -139,7 +140,32 @@ assert(len(test) == 18)
 
 X = take_row_ranges(train, ang10Spectrogram)
 
+y = []
+for i in range(0, len(train)):
+    lab = labels[i]
+    y = y + ([lab] * (train[i][1] - train[i][0]))
+
+y_test = []
+for j in range(0, len(test)):
+    print 'j = ', j
+    i = j + len(train);
+    lab = labels[i]
+    y_test = y_test + ([lab] * (test[j][1] - test[j][0]))
+    
+
 print 'X shape = ', X.shape
+print 'y length = ', len(y)
+
+assert(len(y) == X.shape[0])
+
+gnb = MultinomialNB()
+gnbF = gnb.fit(X, y)
+
+## Evaluate on training data
+X_test = take_row_ranges(test, ang10Spectrogram)
+y_pred = gnbF.predict(X_test)
+print("Number of mislabeled points in undivided test set out of a total %d points : %d"
+          % (X_test.shape[0],(y_pred != y_test).sum()))
 
 sys.exit()
 
