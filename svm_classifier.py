@@ -15,6 +15,10 @@ from spectrogram_utils import take_first_seconds
 from spectrogram_utils import trim_first_seconds
 from spectrogram_utils import build_spectrogram
 from spectrogram_utils import plot_spectrogram
+from spectrogram_utils import sample_to_time
+from spectrogram_utils import time_to_sample
+from spectrogram_utils import sample_to_time_no_add
+from spectrogram_utils import time_to_sample_no_add
 
 print 'Scipy version =' , scipy.__version__
 
@@ -51,21 +55,6 @@ xlocs = np.float32(np.linspace(0, timebins-1, 5))
 print '### xlocs'
 for x in xlocs:
     print x
-
-def sample_to_time(sample_num, total_num_samples, num_times, binSize, sample_rate):
-    return ((sample_num*total_num_samples/num_times)+(0.5*binSize))/sample_rate
-
-def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
-    return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
-
-def sample_to_time_no_add(sample_num, total_num_samples, num_times, sample_rate):
-    return ((sample_num*total_num_samples/num_times))/sample_rate
-
-def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
-    return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
-
-def time_to_sample_no_add(time, total_num_samples, num_times, sample_rate):
-    return ((time*sample_rate)*num_times) / total_num_samples
 
 time_for_8200 = sample_to_time(8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
 print 'Sample 8200 is at time ', time_for_8200
@@ -129,11 +118,14 @@ move_locs = [0]
 last_move_start = 0
 for i in range(0, 35):
     print i
-    last_move_start = last_move_start + move_time + 2*wait_time + 2*down_time + fast_move_time
+    move_end = last_move_start + move_time
+    move_locs.append(move_end)
+
+    last_move_start = move_end + 2*wait_time + 2*down_time + fast_move_time
+    #last_move_start + move_time + 2*wait_time + 2*down_time + fast_move_time
     move_locs.append(last_move_start)
-    # current_line = current_line + move_spec_samples
-    # ang10Lines.append(current_line)
-    # current_line = current_line + 2*wait_spec_samples + fast_move_spec_samples
+
+move_locs.append(last_move_start + move_time)
 
 print '# of move_locs =', len(move_locs)
 ang10Lines = [0] #[prog_start, sixty_second_line]
@@ -343,24 +335,3 @@ for i in range(0, len(sq)):
         wrong_labels.append(inds[i])
 
 plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, wrong_labels)
-
-# for pt in y_pred:
-#     print pt
-
-#print 'Score for test data = ', clf.score(Z, z)
-
-# test_lines = []
-# for r in test:
-#     test_lines.append(r[0])
-#     test_lines.append(r[1])
-
-# plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, test_lines)
-
-# # Unforgiveable sin of data analysis
-# pred = clf.predict(Z)
-
-# #for p in pred:
-# for i in range(0, len(pred)):
-#     p = pred[i]
-#     print 'Predicted = ', p
-#     print 'Actual = ', z[i]

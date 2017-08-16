@@ -119,3 +119,20 @@ def plotstft(audiopath, binsize=2**10, plotpath=None, colormap="jet"):
     #samples = trim_first_seconds(65, samplerate, samples)
     #samples = samples #samples[startS:endS:1]
     plotstft_samples(samplerate, samples, binsize, plotpath, colormap)
+
+def sample_to_time(sample_num, total_num_samples, num_times, binSize, sample_rate):
+    return ((sample_num*total_num_samples/num_times)+(0.5*binSize))/sample_rate
+
+def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
+    return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
+
+def sample_to_time_no_add(sample_num, total_num_samples, num_times, sample_rate):
+    return ((sample_num*total_num_samples/num_times))/sample_rate
+
+def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
+    return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
+
+def time_to_sample_no_add(time, total_num_samples, num_times, sample_rate):
+    return ((time*sample_rate)*num_times) / total_num_samples
+
+    
