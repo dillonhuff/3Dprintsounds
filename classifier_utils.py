@@ -44,3 +44,16 @@ def build_training_data(train_ranges, positive_ranges, spec):
 
     return train_vectors, train_labels
 
+# Create prediction test function
+def predict_and_score(all_square_lines, positive_range_inds, squareSpectrogram):
+    Sq, sq = build_training_data(all_square_lines,
+                                 positive_range_inds,
+                                 squareSpectrogram)
+
+    y_pred = gnbF.predict(Sq)
+    print("Number of mislabeled points in undivided test set out of a total %d points : %d"
+          % (Sq.shape[0],(sq != y_pred).sum()))
+
+    print 'Precision score =', metrics.precision_score(sq, y_pred, [45, 90])
+    print 'Recall score =', metrics.recall_score(sq, y_pred, [45, 90])
+
