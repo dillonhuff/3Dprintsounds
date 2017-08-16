@@ -136,11 +136,13 @@ labels = labels + labels + labels + labels
 print labels
 
 clipped_data = clip_ranges(move_groups, 10)
-train = clipped_data[0:18]
-test = clipped_data[18:36]
+train = clipped_data[0:35]
+test = clipped_data[35:36]
 
-assert(len(train) == 18)
-assert(len(test) == 18)
+# assert(len(train) == )
+# assert(len(test) == 9)
+
+assert(len(test) + len(train) == 36)
 
 X = take_row_ranges(train, ang10Spectrogram)
 
