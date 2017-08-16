@@ -163,9 +163,9 @@ assert(len(y) == X.shape[0])
 gnb = GaussianNB()
 gnbF = gnb.fit(X, y)
 
-## Evaluate on test data
+## Evaluate on training data data
 y_pred = gnbF.predict(X)
-print("Number of mislabeled points in undivided test set out of a total %d points : %d"
+print("Number of mislabeled points in training set out of a total %d points : %d"
           % (X.shape[0],(y_pred != y).sum()))
 
 ## Evaluate on test data
