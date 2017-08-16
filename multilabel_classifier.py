@@ -147,9 +147,11 @@ for i in range(0, len(train)):
 
 y_test = []
 for j in range(0, len(test)):
-    print 'j = ', j
     i = j + len(train);
     lab = labels[i]
+
+    print 'j = ', j, 'label =', lab
+
     y_test = y_test + ([lab] * (test[j][1] - test[j][0]))
     
 
@@ -161,7 +163,12 @@ assert(len(y) == X.shape[0])
 gnb = MultinomialNB()
 gnbF = gnb.fit(X, y)
 
-## Evaluate on training data
+## Evaluate on test data
+y_pred = gnbF.predict(X)
+print("Number of mislabeled points in undivided test set out of a total %d points : %d"
+          % (X.shape[0],(y_pred != y).sum()))
+
+## Evaluate on test data
 X_test = take_row_ranges(test, ang10Spectrogram)
 y_pred = gnbF.predict(X_test)
 print("Number of mislabeled points in undivided test set out of a total %d points : %d"
