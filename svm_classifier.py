@@ -70,8 +70,7 @@ print '### Plot times'
 for l in plot_times:
     print l
 
-
-sys.exit()
+#sys.exit()
 
 ang10Spectrogram = ang10Spectrogram[:, 0:freq_cutoff]
 
@@ -97,8 +96,8 @@ print 'Spec samples per second =', spec_samples_per_second
 
 #move_spec_samples = 2*((move_time * ang10SampleRate) / binSize)
 
-move_spec_samples = spec_samples_per_second*move_time
-fast_move_spec_samples = spec_samples_per_second*fast_move_time
+move_spec_samples = sample_to_time(move_time) #spec_samples_per_second*move_time
+fast_move_spec_samples = sample_to_time(fast_move_time) #spec_samples_per_second*fast_move_time
 
 wait_spec_samples = 3*spec_samples_per_second
 
