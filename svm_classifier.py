@@ -35,7 +35,7 @@ total_samples = ang10Samples.shape[0]
 
 print 'Total samples =', total_samples
 
-ang10Samples = take_first_seconds(80, ang10SampleRate, ang10Samples)
+#ang10Samples = take_first_seconds(200, ang10SampleRate, ang10Samples)
 #ang10Samples = trim_first_seconds(25, ang10SampleRate, ang10Samples)
 
 ang10Spectrogram, ang10Freqs = build_spectrogram(ang10SampleRate, ang10Samples, binSize)
@@ -58,6 +58,15 @@ def sample_to_time(sample_num, total_num_samples, num_times, binSize, sample_rat
 def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
     return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
 
+def sample_to_time_no_add(sample_num, total_num_samples, num_times, sample_rate):
+    return ((sample_num*total_num_samples/num_times))/sample_rate
+
+def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
+    return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
+
+def time_to_sample_no_add(time, total_num_samples, num_times, sample_rate):
+    return ((time*sample_rate)*num_times) / total_num_samples
+
 time_for_8200 = sample_to_time(8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
 print 'Sample 8200 is at time ', time_for_8200
 
@@ -73,12 +82,16 @@ for l in plot_times:
 
 ang10Spectrogram = ang10Spectrogram[:, 0:freq_cutoff]
 
-prog_start = 3210
+prog_start = 3200
 ## 1800 mm / min -> 30 mm / sec
 feedrate = 1800.0 / 60.0
 move_distance = 40.0
+
 move_time = move_distance / feedrate
 fast_move_time = move_distance / (2*feedrate)
+wait_time = 3
+down_time = 0.31
+
 
 #move_samples = move_time * ang10SampleRate
 
@@ -95,19 +108,47 @@ print 'Spec samples per second =', spec_samples_per_second
 
 #move_spec_samples = 2*((move_time * ang10SampleRate) / binSize)
 
-move_spec_samples = time_to_sample(move_time, len(ang10Samples), timebins, binSize, ang10SampleRate)
+move_spec_samples = time_to_sample_no_add(move_time, len(ang10Samples), timebins, ang10SampleRate)
 #spec_samples_per_second*move_time
-fast_move_spec_samples = time_to_sample(fast_move_time, len(ang10Samples), timebins, binSize, ang10SampleRate)
+fast_move_spec_samples = time_to_sample_no_add(fast_move_time, len(ang10Samples), timebins, ang10SampleRate)
 
 #spec_samples_per_second*move_time #sample_to_time(fast_move_time) #spec_samples_per_second*fast_move_time
 
-wait_spec_samples = time_to_sample(3, len(ang10Samples), timebins, binSize, ang10SampleRate) #3*spec_samples_per_second
+wait_spec_samples = time_to_sample_no_add(3, len(ang10Samples), timebins, ang10SampleRate) #3*spec_samples_per_second
 
 #print 'Samples per move     = ', move_samples
 print 'Spectrogram per move = ', move_spec_samples
 
-ang10Lines = [prog_start, prog_start + move_spec_samples,
-              prog_start + move_spec_samples + wait_spec_samples + fast_move_spec_samples] #2*wait_spec_samples]# + fast_move_spec_samples]
+forty_second_line = time_to_sample(40, len(ang10Samples), timebins, binSize, ang10SampleRate)
+
+sixty_second_line = forty_second_line + time_to_sample_no_add(20, len(ang10Samples), timebins, ang10SampleRate)
+
+
+
+move_locs = [0]
+last_move_start = 0
+for i in range(0, 35):
+    print i
+    last_move_start = last_move_start + move_time + 2*wait_time + 2*down_time + fast_move_time
+    move_locs.append(last_move_start)
+    # current_line = current_line + move_spec_samples
+    # ang10Lines.append(current_line)
+    # current_line = current_line + 2*wait_spec_samples + fast_move_spec_samples
+
+print '# of move_locs =', len(move_locs)
+ang10Lines = [0] #[prog_start, sixty_second_line]
+current_line = prog_start
+
+for move_time in move_locs:
+    ang10Lines.append(prog_start + time_to_sample(move_time, len(ang10Samples), timebins, binSize, ang10SampleRate))
+
+
+# ang10Lines = [prog_start, prog_start + move_spec_samples,
+#               prog_start + move_spec_samples + wait_spec_samples + fast_move_spec_samples,
+#               forty_second_line]
+
+#2*wait_spec_samples]# + fast_move_spec_samples]
+
 plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
 sys.exit()
