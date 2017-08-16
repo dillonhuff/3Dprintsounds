@@ -1,3 +1,5 @@
+import numpy as np
+
 ## Put the training data into matrices
 def build_labels(train_ranges, positive_ranges):
     labels = []

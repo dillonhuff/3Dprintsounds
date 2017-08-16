@@ -9,6 +9,7 @@ from numpy.lib import stride_tricks
 from scipy import signal
 import scipy
 
+from classifier_utils import take_row_ranges
 from classifier_utils import build_training_data
 from classifier_utils import clip_ranges
 from classifier_utils import predict_and_score
@@ -118,7 +119,7 @@ for move_time in move_locs:
 move_groups = []
 for i in range(0, len(ang10Lines) - 1, 2):
     print i
-    move_groups.append((ang10Lines[i], ang10Lines[i + 1]))
+    move_groups.append((int(round(ang10Lines[i])), int(round(ang10Lines[i + 1]))))
 
 print move_groups
 
@@ -135,6 +136,10 @@ test = clipped_data[18:36]
 
 assert(len(train) == 18)
 assert(len(test) == 18)
+
+X = take_row_ranges(train, ang10Spectrogram)
+
+print 'X shape = ', X.shape
 
 sys.exit()
 
