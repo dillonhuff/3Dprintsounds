@@ -108,20 +108,25 @@ for i in range(0, 35):
 move_locs.append(last_move_start + move_time)
 
 print '# of move_locs =', len(move_locs)
-ang10Lines = [0]
+ang10Lines = [prog_start]
 current_line = prog_start
 
 for move_time in move_locs:
     ang10Lines.append(prog_start + time_to_sample(move_time, len(ang10Samples), timebins, binSize, ang10SampleRate))
 
 
-#plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
+plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
 move_groups = []
 for i in range(0, len(ang10Lines) - 1, 2):
-    print i
-    move_groups.append((int(round(ang10Lines[i])), int(round(ang10Lines[i + 1]))))
+    start = int(round(ang10Lines[i]))
+    end = int(round(ang10Lines[i + 1]))
 
+    #move_groups.append((int(round(ang10Lines[i])), int(round(ang10Lines[i + 1]))))
+    move_groups.append((start, end))
+    print 'Move group', i, 'has size', end - start
+
+print '---- Move groups:'
 print move_groups
 
 assert(len(move_groups) == 36)
