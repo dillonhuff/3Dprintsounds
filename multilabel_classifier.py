@@ -108,7 +108,7 @@ for i in range(0, 35):
 move_locs.append(last_move_start + move_time)
 
 print '# of move_locs =', len(move_locs)
-ang10Lines = [prog_start]
+ang10Lines = []
 current_line = prog_start
 
 for move_time in move_locs:
