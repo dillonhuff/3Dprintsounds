@@ -35,9 +35,8 @@ total_samples = ang10Samples.shape[0]
 
 print 'Total samples =', total_samples
 
-#ang10Samples = take_first_seconds(80, ang10SampleRate, ang10Samples)
+ang10Samples = take_first_seconds(80, ang10SampleRate, ang10Samples)
 #ang10Samples = trim_first_seconds(25, ang10SampleRate, ang10Samples)
-#f, t, Sxx = signal.spectrogram(ang10Samples, ang10SampleRate)
 
 ang10Spectrogram, ang10Freqs = build_spectrogram(ang10SampleRate, ang10Samples, binSize)
 
@@ -96,16 +95,19 @@ print 'Spec samples per second =', spec_samples_per_second
 
 #move_spec_samples = 2*((move_time * ang10SampleRate) / binSize)
 
-move_spec_samples = sample_to_time(move_time) #spec_samples_per_second*move_time
-fast_move_spec_samples = sample_to_time(fast_move_time) #spec_samples_per_second*fast_move_time
+move_spec_samples = time_to_sample(move_time, len(ang10Samples), timebins, binSize, ang10SampleRate)
+#spec_samples_per_second*move_time
+fast_move_spec_samples = time_to_sample(fast_move_time, len(ang10Samples), timebins, binSize, ang10SampleRate)
 
-wait_spec_samples = 3*spec_samples_per_second
+#spec_samples_per_second*move_time #sample_to_time(fast_move_time) #spec_samples_per_second*fast_move_time
+
+wait_spec_samples = time_to_sample(3, len(ang10Samples), timebins, binSize, ang10SampleRate) #3*spec_samples_per_second
 
 #print 'Samples per move     = ', move_samples
 print 'Spectrogram per move = ', move_spec_samples
 
 ang10Lines = [prog_start, prog_start + move_spec_samples,
-              prog_start + move_spec_samples + wait_spec_samples] #2*wait_spec_samples]# + fast_move_spec_samples]
+              prog_start + move_spec_samples + 2*wait_spec_samples + fast_move_spec_samples] #2*wait_spec_samples]# + fast_move_spec_samples]
 plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
 sys.exit()
