@@ -56,7 +56,13 @@ for x in xlocs:
 def sample_to_time(sample_num, total_num_samples, num_times, binSize, sample_rate):
     return ((sample_num*total_num_samples/num_times)+(0.5*binSize))/sample_rate
 
-print 'Sample 8200 is at time ', sample_to_time(8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
+def time_to_sample(time, total_num_samples, num_times, bin_size, sample_rate):
+    return (((time*sample_rate) - (0.5*bin_size))*num_times) / total_num_samples
+
+time_for_8200 = sample_to_time(8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
+print 'Sample 8200 is at time ', time_for_8200
+
+print 'Sample 8200 is at time to sample', time_to_sample(time_for_8200, len(ang10Samples), timebins, binSize, ang10SampleRate)
 
 plot_times = ((xlocs*len(ang10Samples)/timebins)+(0.5*binSize))/ang10SampleRate
 
