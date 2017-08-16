@@ -114,7 +114,6 @@ current_line = prog_start
 for move_time in move_locs:
     ang10Lines.append(prog_start + time_to_sample(move_time, len(ang10Samples), timebins, binSize, ang10SampleRate))
 
-
 plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
 move_groups = []
