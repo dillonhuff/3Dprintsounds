@@ -81,17 +81,11 @@ spec_samples_per_second = 2*ang10SampleRate / binSize
 
 print 'Spec samples per second =', spec_samples_per_second
 
-#move_spec_samples = 2*((move_time * ang10SampleRate) / binSize)
-
 move_spec_samples = time_to_sample_no_add(move_time, len(ang10Samples), timebins, ang10SampleRate)
-#spec_samples_per_second*move_time
 fast_move_spec_samples = time_to_sample_no_add(fast_move_time, len(ang10Samples), timebins, ang10SampleRate)
 
-#spec_samples_per_second*move_time #sample_to_time(fast_move_time) #spec_samples_per_second*fast_move_time
+wait_spec_samples = time_to_sample_no_add(3, len(ang10Samples), timebins, ang10SampleRate)
 
-wait_spec_samples = time_to_sample_no_add(3, len(ang10Samples), timebins, ang10SampleRate) #3*spec_samples_per_second
-
-#print 'Samples per move     = ', move_samples
 print 'Spectrogram per move = ', move_spec_samples
 
 forty_second_line = time_to_sample(40, len(ang10Samples), timebins, binSize, ang10SampleRate)
@@ -106,82 +100,36 @@ for i in range(0, 35):
     move_locs.append(move_end)
 
     last_move_start = move_end + 2*wait_time + 2*down_time + fast_move_time
-    #last_move_start + move_time + 2*wait_time + 2*down_time + fast_move_time
+
     move_locs.append(last_move_start)
 
 move_locs.append(last_move_start + move_time)
 
 print '# of move_locs =', len(move_locs)
-ang10Lines = [0] #[prog_start, sixty_second_line]
+ang10Lines = [0]
 current_line = prog_start
 
 for move_time in move_locs:
     ang10Lines.append(prog_start + time_to_sample(move_time, len(ang10Samples), timebins, binSize, ang10SampleRate))
 
 
-# ang10Lines = [prog_start, prog_start + move_spec_samples,
-#               prog_start + move_spec_samples + wait_spec_samples + fast_move_spec_samples,
-#               forty_second_line]
+#plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
 
-#2*wait_spec_samples]# + fast_move_spec_samples]
+move_groups = []
+for i in range(0, len(ang10Lines) - 1, 2):
+    print i
+    move_groups.append((ang10Lines[i], ang10Lines[i + 1]))
 
-plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
+print move_groups
+
+assert(len(move_groups) == 36)
+
+labels = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+labels = labels + labels + labels + labels
+
+print labels
 
 sys.exit()
-
-anglesSampleRate, anglesSamples = wav.read("./angles_45/iPhone6sAudio.wav")
-
-anglesSamples = take_first_seconds(100, anglesSampleRate, anglesSamples)
-anglesSamples = trim_first_seconds(33, anglesSampleRate, anglesSamples)
-
-angleSpectrogram, angleFreqs = build_spectrogram(anglesSampleRate, anglesSamples, binSize)
-
-print 'Spectrogram shape =', angleSpectrogram.shape
-
-## Clip away the high band frequencies with no real activity
-angleSpectrogram = angleSpectrogram[:, 0:freq_cutoff]
-
-print 'Spectrogram shape =', angleSpectrogram.shape
-
-## Approximate ranges for each train / test movement
-angleLines = [(250, 400),
-              (1060, 1200),
-              (1860, 2015),
-              (2675, 2825),
-              (3475, 3640),
-              (4285, 4450),
-              (5100, 5250),
-              (5900, 6050)]
-
-train = angleLines[0:6]
-test = angleLines[6:8]
-
-print '# of training sample groups = ', len(train)
-print '# of testing sample groups  = ', len(test)
-
-## Plot the spectrogram to view consistency
-plot_spectrogram(angleSpectrogram, angleFreqs, anglesSamples, anglesSampleRate, binSize, [])
-
-# Assemble training and test arrays
-
-## Clip the training and test ranges to be sure they are correct
-def clip_ranges(ranges, clip_value):
-    rs = []
-    for r in ranges:
-        rs.append((r[0] + clip_value, r[1] - clip_value))
-
-    return rs
-
-train = clip_ranges(train, 10)
-test = clip_ranges(test, 10)
-
-# print 'Train ranges'
-# for ls in train:
-#     print ls
-
-# print 'Test ranges'
-# for ls in test:
-#     print ls
 
 ninety_deg_ranges = [0, 2, 4]
 X, y = build_training_data(train, ninety_deg_ranges, angleSpectrogram)
@@ -195,44 +143,44 @@ predict_and_score(train, ninety_deg_ranges, angleSpectrogram)
 # Build test data
 predict_and_score(test, [0], angleSpectrogram)
 
-squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
+# squareSampleRate, squareSamples = wav.read("./Manual_square/iPhone6sAudio.wav")
 
-squareSamples = take_first_seconds(77, squareSampleRate, squareSamples)
-squareSamples = trim_first_seconds(68, squareSampleRate, squareSamples)
+# squareSamples = take_first_seconds(77, squareSampleRate, squareSamples)
+# squareSamples = trim_first_seconds(68, squareSampleRate, squareSamples)
 
-squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
+# squareSpectrogram, squareFreqs = build_spectrogram(squareSampleRate, squareSamples, binSize)
 
-## Clip away the high band frequencies with no real activity
-squareSpectrogram = squareSpectrogram[:, 0:freq_cutoff]
+# ## Clip away the high band frequencies with no real activity
+# squareSpectrogram = squareSpectrogram[:, 0:freq_cutoff]
 
-# Test on transitional data
-square_lines = [(60, 185),
-                (190, 310),
-                (320, 445),
-                (455, 575)]
-#plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
+# # Test on transitional data
+# square_lines = [(60, 185),
+#                 (190, 310),
+#                 (320, 445),
+#                 (455, 575)]
+# #plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, [])
 
-print '---- Score on clipped square cutting dataset ----'
-predict_and_score(square_lines, [0, 1, 2, 3], squareSpectrogram)
+# print '---- Score on clipped square cutting dataset ----'
+# predict_and_score(square_lines, [0, 1, 2, 3], squareSpectrogram)
 
-Sq, sq = build_training_data(square_lines, [0, 1, 2, 3], squareSpectrogram)
-y_pred = gnbF.predict(Sq)
-# print("Number of mislabeled points in test set out of a total %d points : %d"
-#       % (Sq.shape[0],(sq != y_pred).sum()))
+# Sq, sq = build_training_data(square_lines, [0, 1, 2, 3], squareSpectrogram)
+# y_pred = gnbF.predict(Sq)
+# # print("Number of mislabeled points in test set out of a total %d points : %d"
+# #       % (Sq.shape[0],(sq != y_pred).sum()))
 
     
-# Test on entire dataset
+# # Test on entire dataset
 
-all_square_lines = [(60, 575)]
+# all_square_lines = [(60, 575)]
 
-print '---- Score on entire square printing dataset ----'
-predict_and_score(all_square_lines, [0], squareSpectrogram)
+# print '---- Score on entire square printing dataset ----'
+# predict_and_score(all_square_lines, [0], squareSpectrogram)
 
-inds = wanted_data(all_square_lines)
+# inds = wanted_data(all_square_lines)
 
-wrong_labels = []
-for i in range(0, len(sq)):
-    if sq[i] != y_pred[i]:
-        wrong_labels.append(inds[i])
+# wrong_labels = []
+# for i in range(0, len(sq)):
+#     if sq[i] != y_pred[i]:
+#         wrong_labels.append(inds[i])
 
-plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, wrong_labels)
+# plot_spectrogram(squareSpectrogram, squareFreqs, squareSamples, squareSampleRate, binSize, wrong_labels)
