@@ -160,7 +160,7 @@ print 'y length = ', len(y)
 
 assert(len(y) == X.shape[0])
 
-gnb = MultinomialNB()
+gnb = GaussianNB()
 gnbF = gnb.fit(X, y)
 
 ## Evaluate on test data
