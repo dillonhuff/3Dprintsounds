@@ -48,7 +48,9 @@ num_samples = total_time * (ang10SampleRate / binSize)
 ## Print out spectrogram time increments
 timebins, freqbins = np.shape(ang10Spectrogram)
 xlocs = np.float32(np.linspace(0, timebins-1, 5))
-for l in ((xlocs*len(ang10Samples)/timebins)+(0.5*binSize))/ang10SampleRate:
+plot_times = ((xlocs*len(ang10Samples)/timebins)+(0.5*binSize))/ang10SampleRate
+
+for l in plot_times:
     print l
 
 
