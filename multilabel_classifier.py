@@ -157,6 +157,7 @@ for j in range(0, len(test)):
 
 print 'X shape = ', X.shape
 print 'y length = ', len(y)
+print 'y_test length = ', len(y_test)
 
 assert(len(y) == X.shape[0])
 
