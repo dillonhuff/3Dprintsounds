@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 import scipy.io.wavfile as wav
 from numpy.lib import stride_tricks
 from scipy import signal
+import scipy
 
 
 from spectrogram_utils import plotstft
@@ -15,17 +16,7 @@ from spectrogram_utils import trim_first_seconds
 from spectrogram_utils import build_spectrogram
 from spectrogram_utils import plot_spectrogram
 
-X = [[0, 1], [1, 1]]
-y = [0, 1]
-
-clf = svm.SVC()
-
-clf.fit(X, y)
-
-pred = clf.predict([[2., 2.], [0, 0]])
-
-for p in pred:
-    print p
+print 'Scipy version =' , scipy.__version__
 
 # Proper numpy based training data with spectrogram
 
@@ -40,15 +31,32 @@ binSize = 2**10
 
 ang10SampleRate, ang10Samples = wav.read("./angles_10/iPhone6sAudio.wav")
 
-ang10Samples = take_first_seconds(80, ang10SampleRate, ang10Samples)
-#ang10Samples = trim_first_seconds(25, ang10SampleRate, ang10Samples)
+total_samples = ang10Samples.shape[0]
 
+print 'Total samples =', total_samples
+
+#ang10Samples = take_first_seconds(80, ang10SampleRate, ang10Samples)
+#ang10Samples = trim_first_seconds(25, ang10SampleRate, ang10Samples)
+#f, t, Sxx = signal.spectrogram(ang10Samples, ang10SampleRate)
 
 ang10Spectrogram, ang10Freqs = build_spectrogram(ang10SampleRate, ang10Samples, binSize)
 
+total_time = 360
+num_samples = total_time * (ang10SampleRate / binSize)
+
+#plot_spectrogram(ang10Spectrogram, ang10Freqs, ang10Samples, ang10SampleRate, binSize, ang10Lines)
+## Print out spectrogram time increments
+timebins, freqbins = np.shape(ang10Spectrogram)
+xlocs = np.float32(np.linspace(0, timebins-1, 5))
+for l in ((xlocs*len(ang10Samples)/timebins)+(0.5*binSize))/ang10SampleRate:
+    print l
+
+
+sys.exit()
+
 ang10Spectrogram = ang10Spectrogram[:, 0:freq_cutoff]
 
-prog_start = 3200
+prog_start = 3210
 ## 1800 mm / min -> 30 mm / sec
 feedrate = 1800.0 / 60.0
 move_distance = 40.0
@@ -57,7 +65,16 @@ fast_move_time = move_distance / (2*feedrate)
 
 #move_samples = move_time * ang10SampleRate
 
+print 'Spectrogram shape =', ang10Spectrogram.shape
+
+num_samples = ang10Spectrogram.shape[0]
+exec_time = num_samples / binSize
+
+print 'Exec time = ', exec_time
+
 spec_samples_per_second = 2*ang10SampleRate / binSize
+
+print 'Spec samples per second =', spec_samples_per_second
 
 #move_spec_samples = 2*((move_time * ang10SampleRate) / binSize)
 
